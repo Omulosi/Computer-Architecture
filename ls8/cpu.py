@@ -35,6 +35,12 @@ class CPU:
         RET = 0b00010001
         ADD = 0b10100000
         ST = 0b10000100
+        CMP = 0b10100111
+        IRET = 0b00010011
+        JEQ = 0b01010101
+        JMP = 0b01010100
+        JNE = 0b01010110
+
 
         self.branchtable = {
             MUL: self.mul,
@@ -118,8 +124,35 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "CMP":
+            self.FL = 0x00
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.FL = self.FL | 0b00000001
+            elif self.reg[reg_a] < self.reg[reg_b]:
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.FL = self.FL | 0b00000100
+            else:
+            if self.reg[reg_a] > self.reg[reg_b]:
+                self.FL = self.FL | 0b00000010
         else:
-            raise Exception("Unsupported ALU operation")
+            raise Exception("Unsupported Operation")
+
+    def jeq(self, operand_a):
+        if self.FL & 0b00000001 == 1:
+        if (self.FL & 0b00000001) == 1:
+            self.PC = self.reg[operand_a]
+        else:
+            self.PC += 2
+
+    def jne(self, operand_a):
+        if self.FL >> 2 == 0:
+        if (self.FL & 0b00000001) == 0:
+            self.PC = self.reg[operand_a]
+        else:
+            self.PC += 2
+
+    def jmp(self, operand_a):
+        self.PC = self.reg[operand_a]
 
     def trace(self):
         """
