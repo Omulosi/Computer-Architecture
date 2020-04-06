@@ -128,24 +128,20 @@ class CPU:
             self.FL = 0x00
             if self.reg[reg_a] == self.reg[reg_b]:
                 self.FL = self.FL | 0b00000001
-            elif self.reg[reg_a] < self.reg[reg_b]:
             if self.reg[reg_a] < self.reg[reg_b]:
                 self.FL = self.FL | 0b00000100
-            else:
             if self.reg[reg_a] > self.reg[reg_b]:
                 self.FL = self.FL | 0b00000010
         else:
             raise Exception("Unsupported Operation")
 
     def jeq(self, operand_a):
-        if self.FL & 0b00000001 == 1:
         if (self.FL & 0b00000001) == 1:
             self.PC = self.reg[operand_a]
         else:
             self.PC += 2
 
     def jne(self, operand_a):
-        if self.FL >> 2 == 0:
         if (self.FL & 0b00000001) == 0:
             self.PC = self.reg[operand_a]
         else:
