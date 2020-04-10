@@ -23,7 +23,7 @@ class CPU:
         self.IR = None
         self.MAR = None
         self.MDR = None
-        self.FL = 0
+        self.FL = 0x00
 
         LDI = 0b10000010
         PRN = 0b01000111
@@ -34,13 +34,10 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
-        ST = 0b10000100
         CMP = 0b10100111
-        IRET = 0b00010011
         JEQ = 0b01010101
         JMP = 0b01010100
         JNE = 0b01010110
-
 
         self.branchtable = {
             MUL: self.mul,
@@ -52,7 +49,10 @@ class CPU:
             CALL: self.call,
             RET: self.ret,
             ADD: self.add,
-            ST: self.st
+            JMP: self.jmp,
+            JEQ: self.jeq,
+            JNE: self.jne,
+            CMP: self.cmp,
         }
 
     def ram_read(self, address):
@@ -135,6 +135,9 @@ class CPU:
         else:
             raise Exception("Unsupported Operation")
 
+    def cmp(self, operand_a, operand_b):
+        self.alu("CMP", operand_a, operand_b)
+
     def jeq(self, operand_a):
         if (self.FL & 0b00000001) == 1:
             self.PC = self.reg[operand_a]
@@ -202,6 +205,3 @@ class CPU:
     def ret(self):
         self.PC = self.ram[self.reg[7]]
         self.reg[7] += 1
-
-    def st(self, operand_a, operand_b):
-        self.ram[self.reg[operand_a]] = self.reg[operand_b]
